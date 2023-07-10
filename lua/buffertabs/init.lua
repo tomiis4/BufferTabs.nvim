@@ -17,7 +17,9 @@ local cfg = {
     icons = true,
     hl_group = 'Keyword',
     hl_group_inactive = 'Comment',
-    exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' }
+    exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
+    horizontal = 'right',
+    vertical = 'bottom'
 }
 
 
@@ -63,7 +65,7 @@ local function create_win(name, is_active, data_idx)
         relative = 'editor',
         width = #name,
         height = 1,
-        row = 0,
+        row = U.get_position_vertical(cfg.vertical),
         col = width + 3,
         style = "minimal",
         border = cfg.border,
@@ -90,7 +92,8 @@ local function create_win(name, is_active, data_idx)
 end
 
 local function display_buffers()
-    width = vim.o.columns / 2 - U.get_max_width(data) / 2
+    local max = U.get_max_width(data)
+    width = U.get_position_horizontal(cfg.horizontal, max)
 
     for idx, v in pairs(data) do
         create_win(v.name, v.active, idx)
@@ -100,11 +103,13 @@ end
 
 ---@param opts table
 local function setup(opts)
+    -- load config
     opts = opts or {}
     for k, v in pairs(opts) do
         cfg[k] = v
     end
 
+    -- start displaying
     api.nvim_create_autocmd(U.events, {
         callback = function()
             U.delete_buffers(data)

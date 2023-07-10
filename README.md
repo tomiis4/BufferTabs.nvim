@@ -71,7 +71,13 @@ require('buffertabs').setup({
     hl_group_inactive = 'Comment',
 
     ---@type table<string>
-    exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' }
+    exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
+
+    ---@type 'left'|'right'|'center'
+    horizontal = 'center',
+
+    ---@type 'top'|'bottom'|'center'
+    vertical = 'top',
 })
 ```
 

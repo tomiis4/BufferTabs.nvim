@@ -20,12 +20,12 @@ function U.get_icon(name, ext, cfg)
 end
 
 ---@param data Data[]
----@return number 
+---@return number
 function U.get_max_width(data)
     local max = 0
 
     for _, v in pairs(data) do
-        max = max + #v.name + 3
+        max = max + #v.name + 4
     end
 
     return max
@@ -48,6 +48,32 @@ function U.delete_buffers(data)
                 buf = nil
             end
         end
+    end
+end
+
+--- return number  based of position, default is center
+---@param pos 'left'|'right'|'center'
+---@param max number 
+---@return number
+function U.get_position_horizontal(pos, max)
+    if pos == 'left' then
+        return 0
+    elseif pos == 'right' then
+        return vim.o.columns - max
+    else
+        return vim.o.columns / 2 - max / 2
+    end
+end
+
+---@param pos 'top'|'bottom'|'center'
+---@return number
+function U.get_position_vertical(pos)
+    if pos == 'bottom' then
+        return vim.o.lines - 5
+    elseif pos == 'center' then
+        return vim.o.lines / 2 - 2 -- window is 3 height
+    else
+        return 0
     end
 end
 
