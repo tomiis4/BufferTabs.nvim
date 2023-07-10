@@ -1,4 +1,5 @@
 local api = vim.api
+local U = require('buffertabs.utils')
 
 ---@class Data
 ---@field win_buf number|nil
@@ -19,34 +20,21 @@ local cfg = {
     exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' }
 }
 
----@param name string
----@param ext string
----@return string
-local function get_icon(name, ext)
-    local ok, dev_icons = pcall(require, 'nvim-web-devicons')
-
-    if not cfg.icons then
-        return ' '
-    end
-
-    if not ok then
-        return ''
-    end
-
-    local icon = dev_icons.get_icon(name, ext, { default = true })
-    return icon
-end
 
 local function load_buffers()
     data = {}
 
     for _, buf in pairs(api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) then
+        local is_valid = api.nvim_buf_is_valid(buf)
+        local is_loaded = api.nvim_buf_is_loaded(buf)
+
+        if is_valid and is_loaded then
             local name = api.nvim_buf_get_name(buf):match("[^\\/]+$") or ""
             local ext = string.match(name, "%w+%.(.+)") or name
-            local icon = get_icon(name, ext)
+            local icon = U.get_icon(name, ext, cfg)
 
             local is_excluded = vim.tbl_contains(cfg.exclude, vim.bo[buf].ft)
+
             if not is_excluded and name ~= "" then
                 local is_active = api.nvim_get_current_buf() == buf
 
@@ -61,39 +49,9 @@ local function load_buffers()
     end
 end
 
-local function delete_buffers()
-    for _, v in pairs(data) do
-        local win, buf = v.win, v.win_buf
-
-        if win ~= nil or buf ~= nil then
-            if api.nvim_win_is_valid(win) then
-                api.nvim_win_close(win, true)
-                win = nil
-            end
-
-            if api.nvim_buf_is_valid(buf) then
-                api.nvim_buf_delete(buf, { force = true })
-                buf = nil
-            end
-        end
-    end
-end
-
----@return number
-local function get_max_width()
-    local max = 0
-
-    for _, v in pairs(data) do
-        max = max + #v.name + 3
-    end
-
-    return max
-end
-
 ---@param name string
 ---@param is_active boolean
 ---@param data_idx number
----@param max_len number
 local function create_win(name, is_active, data_idx)
     -- setup buffer
     local buf = api.nvim_create_buf(false, true)
@@ -132,8 +90,7 @@ local function create_win(name, is_active, data_idx)
 end
 
 local function display_buffers()
-    delete_buffers()
-    width = vim.o.columns / 2 - get_max_width() / 2
+    width = vim.o.columns / 2 - U.get_max_width(data) / 2
 
     for idx, v in pairs(data) do
         create_win(v.name, v.active, idx)
@@ -143,14 +100,14 @@ end
 
 ---@param opts table
 local function setup(opts)
+    opts = opts or {}
     for k, v in pairs(opts) do
         cfg[k] = v
     end
 
-    local events = { 'BufEnter', 'BufAdd', 'BufDelete', 'BufLeave', 'InsertChange', 'VimResized' }
-    api.nvim_create_autocmd(events, {
+    api.nvim_create_autocmd(U.events, {
         callback = function()
-            delete_buffers()
+            U.delete_buffers(data)
             load_buffers()
             display_buffers()
         end

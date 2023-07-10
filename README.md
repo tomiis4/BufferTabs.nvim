@@ -87,9 +87,6 @@ require('buffertabs').setup({
 |   \---buffertabs
 |           init.lua
 |           utils.lua
-|
-\---plugin
-        buffertabs.lua
 ```
 
 
