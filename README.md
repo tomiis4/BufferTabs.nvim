@@ -35,6 +35,9 @@ use 'tomiis4/BufferTabs.nvim'
 ```lua
 {
     'tomiis4/BufferTabs.nvim',
+    dependencies = {
+        'nvim-tree/nvim-web-devicons', -- optimal
+    },
     lazy = false,
     config = function()
         require('buffertabs').setup({
@@ -72,6 +75,9 @@ require('buffertabs').setup({
 
     ---@type table<string>
     exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
+
+    ---@type 'row'|'column'
+    display = 'row',
 
     ---@type 'left'|'right'|'center'
     horizontal = 'center',

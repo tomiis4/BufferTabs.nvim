@@ -52,17 +52,34 @@ function U.delete_buffers(data)
 end
 
 --- return number  based of position, default is center
----@param pos 'left'|'right'|'center'
----@param max number 
+---@param cfg table
+---@param max number
+---@param n_buf number
 ---@return number
-function U.get_position_horizontal(pos, max)
-    if pos == 'left' then
-        return 0
-    elseif pos == 'right' then
-        return vim.o.columns - max
-    else
-        return vim.o.columns / 2 - max / 2
+function U.get_position_horizontal(cfg, max, n_buf)
+    local display = cfg.display
+    local pos_h = cfg.horizontal
+    local pos_v = cfg.vertical
+
+    if display == 'row' then
+        if pos_h == 'left' then
+            return 0
+        elseif pos_h == 'right' then
+            return vim.o.columns - max
+        else
+            return vim.o.columns / 2 - max / 2
+        end
+    elseif display == 'column' then
+        if pos_v == 'top' then
+            return 0
+        elseif pos_v == 'bottom' then
+            return vim.o.lines - n_buf * 3 - 2 -- stl
+        else
+            return vim.o.lines / 2 - n_buf * 3 / 2
+        end
     end
+
+    return 0
 end
 
 ---@param pos 'top'|'bottom'|'center'

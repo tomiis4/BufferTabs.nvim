@@ -18,8 +18,10 @@ local cfg = {
     hl_group = 'Keyword',
     hl_group_inactive = 'Comment',
     exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
-    horizontal = 'right',
-    vertical = 'bottom'
+
+    display = 'column',
+    horizontal = 'center',
+    vertical = 'bottom',
 }
 
 
@@ -51,30 +53,59 @@ local function load_buffers()
     end
 end
 
+
 ---@param name string
 ---@param is_active boolean
 ---@param data_idx number
 local function create_win(name, is_active, data_idx)
+    local function get_position()
+        local res = {
+            row = 0,
+            col = 0,
+        }
+
+        if cfg.display == 'row' then
+            res.row = U.get_position_vertical(cfg.vertical)
+            res.col = width + 3
+            width = width + #name + 3
+        end
+
+        if cfg.display == 'column' then
+            if cfg.horizontal == 'left' then
+                res.col = 0
+            elseif cfg.horizontal == 'right' then
+                res.col = vim.o.columns - #name
+            else
+                res.col = vim.o.columns / 2 - #name / 2
+            end
+
+            res.row = width
+            width = width + 3
+        end
+
+        return res
+    end
+
     -- setup buffer
     local buf = api.nvim_create_buf(false, true)
     data[data_idx].win_buf = buf
     api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. name .. " " })
+
+    local pos = get_position()
 
     -- create window
     local win_opts = {
         relative = 'editor',
         width = #name,
         height = 1,
-        row = U.get_position_vertical(cfg.vertical),
-        col = width + 3,
+        row = pos.row,
+        col = pos.col,
         style = "minimal",
         border = cfg.border,
         focusable = false,
     }
     local win = api.nvim_open_win(buf, false, win_opts)
     data[data_idx].win = win
-
-    width = width + #name + 3
 
     -- configure window
     api.nvim_buf_set_option(buf, 'modifiable', false)
@@ -93,7 +124,7 @@ end
 
 local function display_buffers()
     local max = U.get_max_width(data)
-    width = U.get_position_horizontal(cfg.horizontal, max)
+    width = U.get_position_horizontal(cfg, max, #data)
 
     for idx, v in pairs(data) do
         create_win(v.name, v.active, idx)
