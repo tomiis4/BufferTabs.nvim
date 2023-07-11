@@ -37,16 +37,14 @@ function U.delete_buffers(data)
     for _, v in pairs(data) do
         local win, buf = v.win, v.win_buf
 
-        if win ~= nil or buf ~= nil then
-            if api.nvim_win_is_valid(win) then
-                api.nvim_win_close(win, true)
-                win = nil
-            end
+        if win ~= nil and api.nvim_win_is_valid(win) then
+            api.nvim_win_close(win, true)
+            win = nil
+        end
 
-            if api.nvim_buf_is_valid(buf) then
-                api.nvim_buf_delete(buf, { force = true })
-                buf = nil
-            end
+        if buf ~= nil and api.nvim_buf_is_valid(buf) then
+            api.nvim_buf_delete(buf, { force = true })
+            buf = nil
         end
     end
 end
@@ -94,6 +92,6 @@ function U.get_position_vertical(pos)
     end
 end
 
-U.events = { 'BufEnter', 'BufAdd', 'BufDelete', 'BufLeave', 'InsertChange', 'VimResized' }
+U.events = { 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized' }
 
 return U

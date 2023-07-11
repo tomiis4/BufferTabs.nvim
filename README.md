@@ -36,7 +36,7 @@ use 'tomiis4/BufferTabs.nvim'
 {
     'tomiis4/BufferTabs.nvim',
     dependencies = {
-        'nvim-tree/nvim-web-devicons', -- optimal
+        'nvim-tree/nvim-web-devicons', -- optional
     },
     lazy = false,
     config = function()
@@ -49,6 +49,15 @@ use 'tomiis4/BufferTabs.nvim'
 
 </details>
 
+## Toggle
+
+```lua
+-- 1) lua code
+require('buffertabs').toggle()
+
+-- 2) command
+:BufferTabsToggle
+```
 
 ## Setup
 

@@ -1,4 +1,5 @@
 local api = vim.api
+local M = {}
 local U = require('buffertabs.utils')
 
 ---@class Data
@@ -10,18 +11,27 @@ local U = require('buffertabs.utils')
 ---@type Data[]
 local data = {}
 local width = 0
+local is_enabled = false
 local ns = api.nvim_create_namespace('buffertabs')
 
+---@class Config
 local cfg = {
+    ---@type 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|table
     border = 'rounded',
+    ---@type boolean
     icons = true,
+    ---@type string
     hl_group = 'Keyword',
+    ---@type string
     hl_group_inactive = 'Comment',
+    ---@type table<string>
     exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
-
-    display = 'column',
+    ---@type 'row'|'column'
+    display = 'row',
+    ---@type 'left'|'right'|'center'
     horizontal = 'center',
-    vertical = 'bottom',
+    ---@type 'top'|'bottom'|'center'
+    vertical = 'top',
 }
 
 
@@ -37,7 +47,8 @@ local function load_buffers()
             local ext = string.match(name, "%w+%.(.+)") or name
             local icon = U.get_icon(name, ext, cfg)
 
-            local is_excluded = vim.tbl_contains(cfg.exclude, vim.bo[buf].ft)
+            local ft = api.nvim_buf_get_option(buf, 'ft')
+            local is_excluded = vim.tbl_contains(cfg.exclude, ft)
 
             if not is_excluded and name ~= "" then
                 local is_active = api.nvim_get_current_buf() == buf
@@ -133,7 +144,7 @@ end
 
 
 ---@param opts table
-local function setup(opts)
+function M.setup(opts)
     -- load config
     opts = opts or {}
     for k, v in pairs(opts) do
@@ -141,15 +152,30 @@ local function setup(opts)
     end
 
     -- start displaying
+    is_enabled = true
+
     api.nvim_create_autocmd(U.events, {
         callback = function()
-            U.delete_buffers(data)
-            load_buffers()
-            display_buffers()
+            if is_enabled then
+                U.delete_buffers(data)
+                load_buffers()
+                display_buffers()
+            end
         end
     })
 end
 
-return {
-    setup = setup
-}
+function M.toggle()
+    if is_enabled == false then
+        U.delete_buffers(data)
+        load_buffers()
+        display_buffers()
+
+        is_enabled = true
+    else
+        U.delete_buffers(data)
+        is_enabled = false
+    end
+end
+
+return M
