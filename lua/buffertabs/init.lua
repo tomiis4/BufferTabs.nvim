@@ -24,8 +24,10 @@ local cfg = {
     hl_group = 'Keyword',
     ---@type string
     hl_group_inactive = 'Comment',
-    ---@type table<string>
-    exclude = { 'NvimTree', 'help', 'dashboard', 'lir', 'alpha' },
+    ---@type string[]
+    exclude = {},
+    ---@type boolean
+    show_all = false,
     ---@type 'row'|'column'
     display = 'row',
     ---@type 'left'|'right'|'center'
@@ -38,28 +40,39 @@ local cfg = {
 local function load_buffers()
     data = {}
 
-    for _, buf in pairs(api.nvim_list_bufs()) do
-        local is_valid = api.nvim_buf_is_valid(buf)
+    local bufs = api.nvim_list_bufs()
+    bufs = vim.tbl_filter(function(buf)
+        if cfg.show_all then
+            return true
+        end
+
         local is_loaded = api.nvim_buf_is_loaded(buf)
+        local is_listed = vim.fn.buflisted(buf) == 1
 
-        if is_valid and is_loaded then
-            local name = api.nvim_buf_get_name(buf):match("[^\\/]+$") or ""
-            local ext = string.match(name, "%w+%.(.+)") or name
-            local icon = U.get_icon(name, ext, cfg)
+        if not (is_loaded and is_listed) then
+            return false
+        end
 
-            local ft = api.nvim_get_option_value('ft', { buf = buf })
-            local is_excluded = vim.tbl_contains(cfg.exclude, ft)
+        return true
+    end, bufs)
 
-            if not is_excluded and name ~= "" then
-                local is_active = api.nvim_get_current_buf() == buf
+    for _, buf in pairs(bufs) do
+        local name = api.nvim_buf_get_name(buf):match("[^\\/]+$") or ""
+        local ext = string.match(name, "%w+%.(.+)") or name
+        local icon = U.get_icon(name, ext, cfg)
 
-                table.insert(data, {
-                    win = nil,
-                    win_buf = nil,
-                    name = icon .. " " .. name .. "",
-                    active = is_active,
-                })
-            end
+        local ft = api.nvim_get_option_value('ft', { buf = buf })
+        local is_excluded = vim.tbl_contains(cfg.exclude, ft)
+
+        if not is_excluded and name ~= "" then
+            local is_active = api.nvim_get_current_buf() == buf
+
+            table.insert(data, {
+                win = nil,
+                win_buf = nil,
+                name = icon .. " " .. name .. "",
+                active = is_active,
+            })
         end
     end
 end
