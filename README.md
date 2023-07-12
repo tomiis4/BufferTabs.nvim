@@ -129,6 +129,12 @@ require('buffertabs').setup({
                 <sup> founder </sup>
                 </a><br/>
             </td>
+            <td align="center" valign="top" width="14.28%">
+                <a href="https://github.com/futsuuu">
+                <img src="https://avatars.githubusercontent.com/u/105504350?v=4" width="50px;" alt="futsuuu"/><br />
+                <sub><b> futsuuu </b></sub><br />
+                </a><br />
+            </td>
         </tr>
     </tbody>
 </table>
