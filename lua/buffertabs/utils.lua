@@ -92,6 +92,6 @@ function U.get_position_vertical(pos)
     end
 end
 
-U.events = { 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized' }
+U.events = { 'TermEnter', 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized' }
 
 return U
