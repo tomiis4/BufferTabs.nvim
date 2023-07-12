@@ -47,7 +47,7 @@ local function load_buffers()
             local ext = string.match(name, "%w+%.(.+)") or name
             local icon = U.get_icon(name, ext, cfg)
 
-            local ft = api.nvim_buf_get_option(buf, 'ft')
+            local ft = api.nvim_get_option_value('ft', { buf = buf })
             local is_excluded = vim.tbl_contains(cfg.exclude, ft)
 
             if not is_excluded and name ~= "" then
@@ -119,17 +119,17 @@ local function create_win(name, is_active, data_idx)
     data[data_idx].win = win
 
     -- configure window
-    api.nvim_buf_set_option(buf, 'modifiable', false)
-    api.nvim_buf_set_option(buf, 'buflisted', false)
+    api.nvim_set_option_value('modifiable', false, { buf = buf })
+    api.nvim_set_option_value('buflisted', false, { buf = buf })
 
 
     -- add highlight
     if is_active then
         api.nvim_buf_add_highlight(buf, ns, cfg.hl_group, 0, 0, -1)
-        api.nvim_win_set_option(win, 'winhighlight', 'FloatBorder:' .. cfg.hl_group)
+        api.nvim_set_option_value('winhighlight', 'FloatBorder:' .. cfg.hl_group, { win = win })
     else
         api.nvim_buf_add_highlight(buf, ns, cfg.hl_group_inactive, 0, 0, -1)
-        api.nvim_win_set_option(win, 'winhighlight', 'FloatBorder:' .. cfg.hl_group_inactive)
+        api.nvim_set_option_value('winhighlight', 'FloatBorder:' .. cfg.hl_group_inactive, { win = win })
     end
 end
 
