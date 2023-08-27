@@ -18,6 +18,8 @@ local ns = api.nvim_create_namespace('buffertabs')
 local cfg = {
     ---@type 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|table
     border = 'rounded',
+    ---@type integer
+    padding = 1,
     ---@type boolean
     icons = true,
     ---@type string
@@ -91,7 +93,7 @@ local function create_win(name, is_active, data_idx)
         if cfg.display == 'row' then
             res.row = U.get_position_vertical(cfg.vertical)
             res.col = width + 3
-            width = width + #name + 3
+            width = width + #name + cfg.padding + 1
         end
 
         if cfg.display == 'column' then
@@ -104,7 +106,7 @@ local function create_win(name, is_active, data_idx)
             end
 
             res.row = width
-            width = width + 3
+            width = width + cfg.padding + 2
         end
 
         return res
