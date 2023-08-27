@@ -73,6 +73,9 @@ require('buffertabs').setup({
     ---@type 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|table
     border = 'rounded',
 
+    ---@type integer
+    padding = 1
+
     ---@type boolean
     icons = true,
 
