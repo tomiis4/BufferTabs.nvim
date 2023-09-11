@@ -39,19 +39,17 @@ local cfg = {
 }
 
 
-local function load_buffers()
+---@param d_buf number
+local function load_buffers(d_buf)
     data = {}
 
     local bufs = api.nvim_list_bufs()
-    bufs = vim.tbl_filter(function(buf)
-        if cfg.show_all then
-            return true
-        end
 
+    bufs = vim.tbl_filter(function(buf)
         local is_loaded = api.nvim_buf_is_loaded(buf)
         local is_listed = vim.fn.buflisted(buf) == 1
 
-        if not (is_loaded and is_listed) then
+        if not (is_loaded and is_listed) or d_buf == buf  then
             return false
         end
 
@@ -171,11 +169,12 @@ function M.setup(opts)
     is_enabled = true
 
     api.nvim_create_autocmd(U.events, {
-        callback = function()
-            -- print("CALLED UPDATE")
+        callback = function(e)
             if is_enabled then
+                local buf = e.event == "BufDelete" and e.buf or -1
+
                 U.delete_buffers(data)
-                load_buffers()
+                load_buffers(buf)
                 display_buffers()
             end
         end
@@ -185,7 +184,7 @@ end
 function M.toggle()
     if is_enabled == false then
         U.delete_buffers(data)
-        load_buffers()
+        load_buffers(-1)
         display_buffers()
 
         is_enabled = true
