@@ -92,6 +92,20 @@ function U.get_position_vertical(pos)
     end
 end
 
+---@param color string
+---@param id number
+---@return string
+function U.get_color(color, id)
+    if vim.startswith(color, "#") then
+        local name = id and 'One' or 'Two'
+        api.nvim_set_hl(0, 'BufferTabs' .. name, { fg = color })
+
+        return 'BufferTabs' .. name
+    end
+
+    return color
+end
+
 U.events = { 'TermEnter', 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized' }
 
 return U

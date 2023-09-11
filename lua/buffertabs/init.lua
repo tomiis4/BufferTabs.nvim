@@ -160,17 +160,19 @@ end
 
 ---@param opts table
 function M.setup(opts)
-    -- load config
-    opts = opts or {}
-    for k, v in pairs(opts) do
-        cfg[k] = v
-    end
+    -- setup config
+    cfg = vim.tbl_deep_extend('force', cfg, opts or {})
+
+    cfg.hl_group = U.get_color(cfg.hl_group, 0)
+    cfg.hl_group_inactive = U.get_color(cfg.hl_group_inactive, 1)
+
 
     -- start displaying
     is_enabled = true
 
     api.nvim_create_autocmd(U.events, {
         callback = function()
+            -- print("CALLED UPDATE")
             if is_enabled then
                 U.delete_buffers(data)
                 load_buffers()
