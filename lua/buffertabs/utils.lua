@@ -106,6 +106,6 @@ function U.get_color(color, id)
     return color
 end
 
-U.events = { 'TermEnter', 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized' }
+U.events = { 'TermEnter', 'BufEnter', 'BufAdd', 'BufDelete', 'InsertChange', 'VimResized', 'BufModifiedSet' }
 
 return U

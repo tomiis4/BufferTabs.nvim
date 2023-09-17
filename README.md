@@ -79,14 +79,14 @@ require('buffertabs').setup({
     ---@type boolean
     icons = true,
 
+    ---@type string
+    modified = "",
+
     ---@type string use hl Group or hex color
     hl_group = 'Keyword',
 
     ---@type string use hl Group or hex color
     hl_group_inactive = 'Comment',
-
-    ---@type table[]
-    exclude = {},
 
     ---@type boolean
     show_all = false,

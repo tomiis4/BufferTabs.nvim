@@ -7,6 +7,7 @@ local U = require('buffertabs.utils')
 ---@field win number|nil
 ---@field name string
 ---@field active boolean
+---@field modified boolean
 
 ---@type Data[]
 local data = {}
@@ -23,11 +24,11 @@ local cfg = {
     ---@type boolean
     icons = true,
     ---@type string
+    modified = "",
+    ---@type string
     hl_group = 'Keyword',
     ---@type string
     hl_group_inactive = 'Comment',
-    ---@type string[]
-    exclude = {},
     ---@type boolean
     show_all = false,
     ---@type 'row'|'column'
@@ -49,7 +50,7 @@ local function load_buffers(d_buf)
         local is_loaded = api.nvim_buf_is_loaded(buf)
         local is_listed = vim.fn.buflisted(buf) == 1
 
-        if not (is_loaded and is_listed) or d_buf == buf  then
+        if not (is_loaded and is_listed) or d_buf == buf then
             return false
         end
 
@@ -58,6 +59,7 @@ local function load_buffers(d_buf)
 
     for _, buf in pairs(bufs) do
         local name = api.nvim_buf_get_name(buf):match("[^\\/]+$") or ""
+        local is_modified = api.nvim_buf_get_option(buf, 'modified')
         local ext = string.match(name, "%w+%.(.+)") or name
         local icon = U.get_icon(name, ext, cfg)
 
@@ -72,6 +74,7 @@ local function load_buffers(d_buf)
                 win_buf = nil,
                 name = icon .. " " .. name .. "",
                 active = is_active,
+                modified = is_modified,
             })
         end
     end
@@ -80,8 +83,9 @@ end
 
 ---@param name string
 ---@param is_active boolean
+---@param is_modified boolean
 ---@param data_idx number
-local function create_win(name, is_active, data_idx)
+local function create_win(name, is_active, is_modified, data_idx)
     local function get_position()
         local res = {
             row = 0,
@@ -91,7 +95,7 @@ local function create_win(name, is_active, data_idx)
         if cfg.display == 'row' then
             res.row = U.get_position_vertical(cfg.vertical)
             res.col = width + 3
-            width = width + #name + cfg.padding + 1
+            width = width + #name + #cfg.modified + cfg.padding + 2
         end
 
         if cfg.display == 'column' then
@@ -112,15 +116,19 @@ local function create_win(name, is_active, data_idx)
 
     -- setup buffer
     local buf = api.nvim_create_buf(false, true)
+    local modified_icon = is_modified and cfg.modified or " "
+
     data[data_idx].win_buf = buf
-    api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. name .. " " })
+    api.nvim_buf_set_lines(buf, 0, -1, true,
+        { " " .. name .. " " .. modified_icon }
+    )
 
     local pos = get_position()
 
     -- create window
     local win_opts = {
         relative = 'editor',
-        width = #name,
+        width = #name + 2,
         height = 1,
         row = pos.row,
         col = pos.col,
@@ -151,7 +159,7 @@ local function display_buffers()
     width = U.get_position_horizontal(cfg, max, #data)
 
     for idx, v in pairs(data) do
-        create_win(v.name, v.active, idx)
+        create_win(v.name, v.active, v.modified, idx)
     end
 end
 
