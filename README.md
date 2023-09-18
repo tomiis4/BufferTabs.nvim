@@ -80,7 +80,7 @@ require('buffertabs').setup({
     icons = true,
 
     ---@type string
-    modified = "",
+    modified = " ",
 
     ---@type string use hl Group or hex color
     hl_group = 'Keyword',

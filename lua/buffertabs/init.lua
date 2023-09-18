@@ -24,7 +24,7 @@ local cfg = {
     ---@type boolean
     icons = true,
     ---@type string
-    modified = "",
+    modified = " +",
     ---@type string
     hl_group = 'Keyword',
     ---@type string
@@ -63,10 +63,7 @@ local function load_buffers(d_buf)
         local ext = string.match(name, "%w+%.(.+)") or name
         local icon = U.get_icon(name, ext, cfg)
 
-        local ft = api.nvim_get_option_value('ft', { buf = buf })
-        local is_excluded = vim.tbl_contains(cfg.exclude, ft)
-
-        if not is_excluded and name ~= "" then
+        if name ~= "" then
             local is_active = api.nvim_get_current_buf() == buf
 
             table.insert(data, {
@@ -94,15 +91,15 @@ local function create_win(name, is_active, is_modified, data_idx)
 
         if cfg.display == 'row' then
             res.row = U.get_position_vertical(cfg.vertical)
-            res.col = width + 3
-            width = width + #name + #cfg.modified + cfg.padding + 2
+            res.col = width + 3 -- padding at left side
+            width = width + #name + #cfg.modified + cfg.padding + 3
         end
 
         if cfg.display == 'column' then
             if cfg.horizontal == 'left' then
                 res.col = 0
             elseif cfg.horizontal == 'right' then
-                res.col = vim.o.columns - #name
+                res.col = vim.o.columns - (#name + #cfg.modified)
             else
                 res.col = vim.o.columns / 2 - #name / 2
             end
@@ -116,11 +113,12 @@ local function create_win(name, is_active, is_modified, data_idx)
 
     -- setup buffer
     local buf = api.nvim_create_buf(false, true)
-    local modified_icon = is_modified and cfg.modified or " "
+    local modified_icon = is_modified and cfg.modified or ""
+    modified_icon = #cfg.modified == 0 and "" or modified_icon -- if you dont want icon
 
     data[data_idx].win_buf = buf
     api.nvim_buf_set_lines(buf, 0, -1, true,
-        { " " .. name .. " " .. modified_icon }
+        { " " .. name .. modified_icon .. " " }
     )
 
     local pos = get_position()
@@ -128,7 +126,7 @@ local function create_win(name, is_active, is_modified, data_idx)
     -- create window
     local win_opts = {
         relative = 'editor',
-        width = #name + 2,
+        width = #name + #cfg.modified, -- 2 for spaces
         height = 1,
         row = pos.row,
         col = pos.col,
@@ -155,7 +153,7 @@ local function create_win(name, is_active, is_modified, data_idx)
 end
 
 local function display_buffers()
-    local max = U.get_max_width(data)
+    local max = U.get_max_width(data, cfg)
     width = U.get_position_horizontal(cfg, max, #data)
 
     for idx, v in pairs(data) do

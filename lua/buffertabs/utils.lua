@@ -20,12 +20,13 @@ function U.get_icon(name, ext, cfg)
 end
 
 ---@param data Data[]
+---@param cfg Config
 ---@return number
-function U.get_max_width(data)
+function U.get_max_width(data, cfg)
     local max = 0
 
     for _, v in pairs(data) do
-        max = max + #v.name + 4
+        max = max + #v.name + #cfg.modified + 5 + cfg.padding
     end
 
     return max
