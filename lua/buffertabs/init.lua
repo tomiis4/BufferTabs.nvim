@@ -63,10 +63,7 @@ local function load_buffers(d_buf)
         local ext = string.match(name, "%w+%.(.+)") or name
         local icon = U.get_icon(name, ext, cfg)
 
-        local ft = api.nvim_get_option_value('ft', { buf = buf })
-        local is_excluded = vim.tbl_contains(cfg.exclude, ft)
-
-        if not is_excluded and name ~= "" then
+        if name ~= "" then
             local is_active = api.nvim_get_current_buf() == buf
 
             table.insert(data, {
