@@ -99,7 +99,11 @@ require('buffertabs').setup({
 
     ---@type 'top'|'bottom'|'center'
     vertical = 'top',
+
+    ---@type number in ms (recommend 2000)
+    timeout = 0
 })
+
 ```
 
 </details>

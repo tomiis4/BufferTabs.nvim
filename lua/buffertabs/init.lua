@@ -37,6 +37,8 @@ local cfg = {
     horizontal = 'center',
     ---@type 'top'|'bottom'|'center'
     vertical = 'top',
+    ---@type number ms
+    timeout = 0
 }
 
 
@@ -182,6 +184,13 @@ function M.setup(opts)
                 U.delete_buffers(data)
                 load_buffers(buf)
                 display_buffers()
+
+                if cfg.timeout > 0 then
+                    local timer = vim.loop.new_timer()
+                    timer:start(cfg.timeout, 0, vim.schedule_wrap(function()
+                        U.delete_buffers(data)
+                    end))
+                end
             end
         end
     })
