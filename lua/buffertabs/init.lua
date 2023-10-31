@@ -14,6 +14,7 @@ local data = {}
 local width = 0
 local is_enabled = false
 local ns = api.nvim_create_namespace('buffertabs')
+local timer = nil
 
 ---@class Config
 local cfg = {
@@ -186,7 +187,11 @@ function M.setup(opts)
                 display_buffers()
 
                 if cfg.timeout > 0 then
-                    local timer = vim.loop.new_timer()
+                    if timer ~= nil then
+                        timer:stop()
+                    end
+
+                    timer = vim.loop.new_timer()
                     timer:start(cfg.timeout, 0, vim.schedule_wrap(function()
                         U.delete_buffers(data)
                     end))
