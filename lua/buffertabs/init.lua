@@ -32,6 +32,8 @@ local cfg = {
     hl_group_inactive = 'Comment',
     ---@type boolean
     show_all = false,
+    ---@type boolean
+    show_single_buffer = true,
     ---@type 'row'|'column'
     display = 'row',
     ---@type 'left'|'right'|'center'
@@ -160,6 +162,10 @@ local function display_buffers()
     width = U.get_position_horizontal(cfg, max, #data)
 
     for idx, v in pairs(data) do
+        if #data == 1 and not cfg.show_single_buffer then
+            return
+        end
+
         create_win(v.name, v.active, v.modified, idx)
     end
 end

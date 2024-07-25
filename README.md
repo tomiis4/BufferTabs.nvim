@@ -91,6 +91,9 @@ require('buffertabs').setup({
     ---@type boolean
     show_all = false,
 
+    ---@type boolean
+    show_single_buffer = true,
+
     ---@type 'row'|'column'
     display = 'row',
 
