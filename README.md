@@ -3,7 +3,7 @@
 
 <hr>
 
-<h3 align="center"> <img src='https://media.discordapp.net/attachments/772927831441014847/1127980296537657456/image.png?width=881&height=495'> </h3>
+<h3 align="center"> <img src='https://media.discordapp.net/attachments/772927831441014847/1127980296537657456/image.png?ex=66a3bc83&is=66a26b03&hm=f8be87dc55e8a780d6482f0195ad945c4a5aa21317636039d4db689d1575b568&=&format=webp&quality=lossless&width=1177&height=662'> </h3>
 <h6 align="center"> Colorscheme: RoseBones; Font: JetBrainsMono NF </h6>
 
 <hr>
