@@ -104,7 +104,11 @@ require('buffertabs').setup({
     vertical = 'top',
 
     ---@type number in ms (recommend 2000)
-    timeout = 0
+    timeout = 0,
+    
+    ---@type boolean
+    show_id = false
+
 })
 
 ```

@@ -41,7 +41,9 @@ local cfg = {
     ---@type 'top'|'bottom'|'center'
     vertical = 'top',
     ---@type number ms
-    timeout = 0
+    timeout = 0,
+    ---@type boolean
+    show_id = false
 }
 
 
@@ -70,11 +72,16 @@ local function load_buffers(d_buf)
 
         if name ~= "" then
             local is_active = api.nvim_get_current_buf() == buf
-
+            local final_name = ""
+            if cfg.show_id then
+                final_name = icon .. " " .. buf .. ". " .. name .. ""
+            else
+                final_name = icon .. " " .. name .. ""
+            end
             table.insert(data, {
                 win = nil,
                 win_buf = nil,
-                name = icon .. " " .. name .. "",
+                name = final_name,
                 active = is_active,
                 modified = is_modified,
             })
