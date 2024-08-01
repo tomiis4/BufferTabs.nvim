@@ -43,7 +43,9 @@ local cfg = {
     ---@type number ms
     timeout = 0,
     ---@type boolean
-    show_id = false
+    show_id = false,
+    ---@type integer
+    max_buffers = 0,
 }
 
 
@@ -168,14 +170,15 @@ local function display_buffers()
     local max = U.get_max_width(data, cfg)
     width = U.get_position_horizontal(cfg, max, #data)
 
-    for idx, v in pairs(data) do
-        if #data == 1 and not cfg.show_single_buffer then
-            return
-        end
+    local buffer_count = #data
 
-        create_win(v.name, v.active, v.modified, idx)
+    if cfg.show_single_buffer == false and buffer_count <= 1 then
+        return
     end
-end
+
+    if cfg.max_buffers > 0 and buffer_count > cfg.max_buffers then
+        return
+    end
 
 
 ---@param opts table

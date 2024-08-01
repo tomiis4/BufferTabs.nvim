@@ -105,10 +105,12 @@ require('buffertabs').setup({
 
     ---@type number in ms (recommend 2000)
     timeout = 0,
-    
+
     ---@type boolean
     show_id = false
 
+    ---@type integer
+    max_buffers = 0
 })
 
 ```
