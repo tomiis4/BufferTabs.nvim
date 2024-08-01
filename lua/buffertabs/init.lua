@@ -200,6 +200,11 @@ local function display_buffers()
             end
         end
 
+        -- If there is no active buffer, such as when telescope is open, dont show buffer tabs
+        if active_index == nil then
+            return
+        end
+
         local lowest_idx = active_index - cfg.surround_active_buffer
         local highest_idx = active_index + cfg.surround_active_buffer
 
