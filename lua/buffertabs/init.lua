@@ -58,6 +58,10 @@ local function load_buffers(d_buf)
     local bufs = api.nvim_list_bufs()
 
     bufs = vim.tbl_filter(function(buf)
+        if cfg.show_all then
+            return true
+        end
+
         local is_loaded = api.nvim_buf_is_loaded(buf)
         local is_listed = vim.fn.buflisted(buf) == 1
 
