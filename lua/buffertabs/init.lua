@@ -46,6 +46,8 @@ local cfg = {
     show_id = false,
     ---@type integer
     max_buffers = 0,
+    ---@type integer
+    surround_active_buffer = 0,
 }
 
 
@@ -180,6 +182,37 @@ local function display_buffers()
         return
     end
 
+    -- It only makes sense to show the surrounding buffers if there are enough buffers to show
+    local minimum_buffers_to_show = 2 * cfg.surround_active_buffer + 1
+
+    if cfg.surround_active_buffer > 0 and buffer_count >= minimum_buffers_to_show then
+
+        -- Find the index of the active buffer
+        local active_index = nil
+        for idx, v in pairs(data) do
+            if v.active then
+                active_index = idx
+                break
+            end
+        end
+
+        local lowest_idx = active_index - cfg.surround_active_buffer
+        local highest_idx = active_index + cfg.surround_active_buffer
+
+        local total_shown = 0
+        for idx = lowest_idx, highest_idx do
+            total = total + 1
+            local buffer_idx = idx % buffer_count -- Wrap around to start of list
+            if buffer_idx <= 0 then buffer_idx = buffer_count + buffer_idx end -- Wrap around to end of list
+            local buffer_data = data[buffer_idx]
+            create_win(buffer_data.name, buffer_data.active, buffer_data.modified, total_shown)
+        end
+    else
+        for idx, v in pairs(data) do
+            create_win(v.name, v.active, v.modified, idx)
+        end
+    end
+end
 
 ---@param opts table
 function M.setup(opts)

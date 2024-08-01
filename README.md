@@ -111,6 +111,9 @@ require('buffertabs').setup({
 
     ---@type integer
     max_buffers = 0
+
+    ---@type integer
+    surround_active_buffer = 0
 })
 
 ```
