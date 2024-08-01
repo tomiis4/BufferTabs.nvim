@@ -201,7 +201,7 @@ local function display_buffers()
 
         local total_shown = 0
         for idx = lowest_idx, highest_idx do
-            total = total + 1
+            total_shown = total_shown + 1
             local buffer_idx = idx % buffer_count -- Wrap around to start of list
             if buffer_idx <= 0 then buffer_idx = buffer_count + buffer_idx end -- Wrap around to end of list
             local buffer_data = data[buffer_idx]
