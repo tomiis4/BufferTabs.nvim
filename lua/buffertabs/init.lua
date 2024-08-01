@@ -43,7 +43,11 @@ local cfg = {
     ---@type number ms
     timeout = 0,
     ---@type boolean
-    show_id = false
+    show_id = false,
+    ---@type integer
+    max_buffers = 0,
+    ---@type integer
+    surround_active_buffer = 0,
 }
 
 
@@ -54,6 +58,10 @@ local function load_buffers(d_buf)
     local bufs = api.nvim_list_bufs()
 
     bufs = vim.tbl_filter(function(buf)
+        if cfg.show_all then
+            return true
+        end
+
         local is_loaded = api.nvim_buf_is_loaded(buf)
         local is_listed = vim.fn.buflisted(buf) == 1
 
@@ -168,15 +176,47 @@ local function display_buffers()
     local max = U.get_max_width(data, cfg)
     width = U.get_position_horizontal(cfg, max, #data)
 
-    for idx, v in pairs(data) do
-        if #data == 1 and not cfg.show_single_buffer then
-            return
+    local buffer_count = #data
+
+    if cfg.show_single_buffer == false and buffer_count <= 1 then
+        return
+    end
+
+    if cfg.max_buffers > 0 and buffer_count > cfg.max_buffers then
+        return
+    end
+
+    -- It only makes sense to show the surrounding buffers if there are enough buffers to show
+    local minimum_buffers_to_show = 2 * cfg.surround_active_buffer + 1
+
+    if cfg.surround_active_buffer > 0 and buffer_count >= minimum_buffers_to_show then
+
+        -- Find the index of the active buffer
+        local active_index = nil
+        for idx, v in pairs(data) do
+            if v.active then
+                active_index = idx
+                break
+            end
         end
 
-        create_win(v.name, v.active, v.modified, idx)
+        local lowest_idx = active_index - cfg.surround_active_buffer
+        local highest_idx = active_index + cfg.surround_active_buffer
+
+        local total_shown = 0
+        for idx = lowest_idx, highest_idx do
+            total_shown = total_shown + 1
+            local buffer_idx = idx % buffer_count -- Wrap around to start of list
+            if buffer_idx <= 0 then buffer_idx = buffer_count + buffer_idx end -- Wrap around to end of list
+            local buffer_data = data[buffer_idx]
+            create_win(buffer_data.name, buffer_data.active, buffer_data.modified, total_shown)
+        end
+    else
+        for idx, v in pairs(data) do
+            create_win(v.name, v.active, v.modified, idx)
+        end
     end
 end
-
 
 ---@param opts table
 function M.setup(opts)
