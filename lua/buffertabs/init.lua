@@ -34,6 +34,8 @@ local cfg = {
     ---@type boolean
     show_all = false,
     ---@type boolean
+    show_all_listed = false,
+    ---@type boolean
     show_single_buffer = true,
     ---@type 'row'|'column'
     display = 'row',
@@ -59,18 +61,24 @@ local function load_buffers(d_buf)
     local bufs = api.nvim_list_bufs()
 
     bufs = vim.tbl_filter(function(buf)
+        -- Don't load deleted buffer
+        if d_buf == buf then
+            return false
+        end
+
         if cfg.show_all then
             return true
         end
 
-        local is_loaded = api.nvim_buf_is_loaded(buf)
         local is_listed = vim.fn.buflisted(buf) == 1
 
-        if not (is_loaded and is_listed) or d_buf == buf then
-            return false
+        if cfg.show_all_listed and is_listed then
+            return true
         end
 
-        return true
+        local is_loaded = api.nvim_buf_is_loaded(buf)
+
+        return is_loaded and is_listed
     end, bufs)
 
     for _, buf in pairs(bufs) do
@@ -237,7 +245,7 @@ function M.setup(opts)
     api.nvim_create_autocmd(U.events, {
         callback = function(e)
             if is_enabled then
-                local buf = e.event == "BufDelete" and e.buf or -1
+                local buf = e.event == "BufDelete" and e.buf
 
                 U.delete_buffers(data)
                 load_buffers(buf)
