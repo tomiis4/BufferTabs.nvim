@@ -8,15 +8,15 @@ function U.get_icon(name, ext, cfg)
     local ok, dev_icons = pcall(require, 'nvim-web-devicons')
 
     if not cfg.icons then
-        return ' '
+        return ''
     end
 
     if not ok then
-        return ''
+        return ' '
     end
 
     local icon = dev_icons.get_icon(name, ext, { default = true })
-    return icon
+    return icon .. ' '
 end
 
 ---@param data Data[]
