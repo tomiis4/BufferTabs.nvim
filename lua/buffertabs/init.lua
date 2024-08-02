@@ -15,6 +15,7 @@ local width = 0
 local is_enabled = false
 local ns = api.nvim_create_namespace('buffertabs')
 local timer = nil
+local active_index = nil
 
 ---@class Config
 local cfg = {
@@ -192,12 +193,16 @@ local function display_buffers()
     if cfg.surround_active_buffer > 0 and buffer_count >= minimum_buffers_to_show then
 
         -- Find the index of the active buffer
-        local active_index = nil
         for idx, v in pairs(data) do
             if v.active then
                 active_index = idx
                 break
             end
+        end
+
+        -- If there is no active buffer, such as when telescope is open, dont show buffer tabs
+        if active_index == nil then
+            return
         end
 
         local lowest_idx = active_index - cfg.surround_active_buffer
