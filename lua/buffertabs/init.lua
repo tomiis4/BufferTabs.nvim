@@ -174,10 +174,10 @@ local function create_win(name, is_active, is_modified, data_idx)
     -- add highlight
     if is_active then
         api.nvim_buf_add_highlight(buf, ns, cfg.hl_group, 0, 0, -1)
-        api.nvim_set_option_value('winhighlight', 'FloatBorder:' .. cfg.hl_group, { win = win })
+        api.nvim_set_option_value('winhighlight', 'NormalFloat:Normal,FloatBorder:' .. cfg.hl_group, { win = win })
     else
         api.nvim_buf_add_highlight(buf, ns, cfg.hl_group_inactive, 0, 0, -1)
-        api.nvim_set_option_value('winhighlight', 'FloatBorder:' .. cfg.hl_group_inactive, { win = win })
+        api.nvim_set_option_value('winhighlight', 'NormalFloat:Normal,FloatBorder:' .. cfg.hl_group_inactive, { win = win })
     end
 end
 
