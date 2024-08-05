@@ -3,7 +3,7 @@
 
 <hr>
 
-<h3 align="center"> <img src='https://media.discordapp.net/attachments/772927831441014847/1127980296537657456/image.png?ex=66a3bc83&is=66a26b03&hm=f8be87dc55e8a780d6482f0195ad945c4a5aa21317636039d4db689d1575b568&=&format=webp&quality=lossless&width=1177&height=662'> </h3>
+<h3 align="center"> <img src='https://i.imgur.com/4ogxrNa.png'> </h3>
 <h6 align="center"> Colorscheme: RoseBones; Font: JetBrainsMono NF </h6>
 
 <hr>
@@ -146,6 +146,12 @@ require('buffertabs').setup({
                 <img src="https://avatars.githubusercontent.com/u/87276646?v=4" width="50px;" alt="tomiis4"/><br />
                 <sub><b> tomiis4 </b></sub><br />
                 <sup> founder </sup>
+                </a><br/>
+            </td>
+            <td align="center" valign="top" width="14.28%">
+                <a href="https://github.com/dylan-hoefsloot">
+                <img src="https://avatars.githubusercontent.com/u/27318077?v=4" width="50px;" alt="dylan-hoefsloot"/><br />
+                <sub><b> Dylan Hoefsloot </b></sub><br />
                 </a><br/>
             </td>
             <td align="center" valign="top" width="14.28%">
