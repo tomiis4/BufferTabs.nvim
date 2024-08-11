@@ -3,7 +3,7 @@
 
 <hr>
 
-<h3 align="center"> <img src='https://i.imgur.com/4ogxrNa.png'> </h3>
+<h3 align="center"> <img src="https://github.com/user-attachments/assets/2effdb32-9f4b-4ae1-b239-661579ba1389"> </h3>
 <h6 align="center"> Colorscheme: RoseBones; Font: JetBrainsMono NF </h6>
 
 <hr>
